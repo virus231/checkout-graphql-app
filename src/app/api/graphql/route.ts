@@ -7,12 +7,6 @@ import { resolvers } from '../../../api/resolvers';
 
 const apolloServer = new ApolloServer({ typeDefs, resolvers });
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
 const handler = startServerAndCreateNextHandler<NextRequest>(apolloServer);
 
 export async function GET(request: NextRequest) {

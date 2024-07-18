@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useMutation, useQuery, gql } from '@apollo/client';
-import type { CartItem, CartItemInput } from '@/api/types';
+import type { CartItem, CartItemInput, Order } from '@/api/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -50,7 +50,7 @@ export default function Checkout() {
   const { loading, error, data, refetch } = useQuery(GET_CART);
     const [updateCartItem] = useMutation(UPDATE_CART_ITEM);
     const [checkout] = useMutation(CHECKOUT);
-    const [order, setOrder] = useState(null);
+    const [order, setOrder] = useState<Order | null>(null);
     const { toast } = useToast();
 
     if (loading) return <p>Loading...</p>;
@@ -77,7 +77,7 @@ export default function Checkout() {
 
     const handleCheckout = async () => {
       try {
-        const items = data.cart.map((item: any) => ({
+        const items = data.cart.map((item: CartItem) => ({
           id: item.id,
           quantity: item.quantity,
         }));
@@ -114,7 +114,7 @@ export default function Checkout() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {data.cart.map((item: any) => (
+                {data.cart.map((item: CartItem) => (
                   <TableRow key={item.id}>
                     <TableCell>{item.name}</TableCell>
                     <TableCell>${item.price.toFixed(2)}</TableCell>
@@ -148,7 +148,7 @@ export default function Checkout() {
               <p>Total: ${order.total.toFixed(2)}</p>
               <h3 className="mt-4 mb-2 font-bold">Items:</h3>
               <ul>
-                {order.items.map((item: any) => (
+                {order.items.map((item) => (
                   <li key={item.id}>
                     {item.name} - Quantity: {item.quantity} - ${(item.price * item.quantity).toFixed(2)}
                   </li>
